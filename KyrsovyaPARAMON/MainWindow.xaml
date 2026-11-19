@@ -1,0 +1,146 @@
+﻿<Window x:Class="KyrsovyaPARAMON.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Телефонная станция" Height="600" Width="900"
+        Background="#FFF0F5" FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <!-- Стиль для кнопок -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#C71585"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Margin" Value="0,5,0,15"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#A3126E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для вкладок -->
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="#FFB6C1"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FFF0F5"/>
+                    <Setter Property="Foreground" Value="#C71585"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <TabControl Background="Transparent" BorderThickness="0">
+
+            <!-- ВКЛАДКА 1: АДМИНИСТРАТОР -->
+            <TabItem Header="Панель Администратора">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Управление абонентами" FontSize="22" FontWeight="Bold" Foreground="#C71585" Margin="0,0,0,15"/>
+
+                    <StackPanel Grid.Row="1">
+                        <!-- Форма подключения -->
+                        <Border Background="White" CornerRadius="10" Padding="15" Margin="0,0,0,15" BorderBrush="#FFB6C1" BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Имя:" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtName" Grid.Row="1" Margin="0,0,10,0" Padding="5" BorderBrush="#FFB6C1"/>
+
+                                <TextBlock Text="Фамилия:" Grid.Column="1" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtLastName" Grid.Row="1" Grid.Column="1" Margin="0,0,10,0" Padding="5" BorderBrush="#FFB6C1"/>
+
+                                <TextBlock Text="Телефон:" Grid.Column="2" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtPhone" Grid.Row="1" Grid.Column="2" Padding="5" BorderBrush="#FFB6C1"/>
+                            </Grid>
+                        </Border>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Подключить абонента" Width="200" Click="ConnectAbonent_Click"/>
+                            <Button Content="Посмотреть счета" Width="200" Click="ShowBills_Click" Margin="10,5,0,15"/>
+                            <Button Content="Заблокировать по ID" Width="200" Click="BlockAbonent_Click" Margin="10,5,0,15"/>
+                        </StackPanel>
+
+                        <DataGrid x:Name="dataGridAbonents" ItemsSource="{Binding AbonentsList}" 
+                                  AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                                  Background="White" RowBackground="White" AlternatingRowBackground="#FFF0F5" 
+                                  HeadersVisibility="Column" BorderBrush="#FFB6C1" BorderThickness="1" Height="250">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                                <DataGridTextColumn Header="ФИО" Binding="{Binding GetFIO}" Width="*"/>
+                                <DataGridTextColumn Header="Телефон" Binding="{Binding PhoneNumber}" Width="*"/>
+                                <DataGridTextColumn Header="Баланс" Binding="{Binding Balance}" Width="*"/>
+                                <DataGridCheckBoxColumn Header="Заблокирован" Binding="{Binding IsBlocked}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- ВКЛАДКА 2: АБОНЕНТ -->
+            <TabItem Header="Личный кабинет Абонента">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Личный кабинет" FontSize="22" FontWeight="Bold" Foreground="#C71585" Margin="0,0,0,15"/>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Блок выбора услуг -->
+                        <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="15" Margin="0,0,10,0" BorderBrush="#FFB6C1" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="Доступные услуги" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                                <ListBox x:Name="listBoxServices" Height="200" DisplayMemberPath="ServiceName" BorderBrush="#FFB6C1"/>
+                                <Button Content="Подключить услугу" Click="ConnectService_Click" Margin="0,15,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Блок оплаты -->
+                        <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="15" BorderBrush="#FFB6C1" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="Оплата счета" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                                <TextBlock Text="Введите ID абонента для оплаты:" Margin="0,0,0,5"/>
+                                <TextBox x:Name="txtAbonentIdPay" Padding="5" Margin="0,0,0,10" BorderBrush="#FFB6C1"/>
+                                <Button Content="Проверить счета и оплатить" Click="PayBill_Click"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
